@@ -7,12 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -63,11 +61,50 @@ public class OwnerController {
         } else if (result.size() == 1) {
             owner = result.get(0);
 
-            return "redirect:/owners/" + owner.getId();
+            return String.format("redirect:/owners/%s", owner.getId());
         } else {
             model.addAttribute("result", result);
 
             return "owners/owners-list";
+        }
+    }
+
+    @GetMapping("/new")
+    public ModelAndView showCreateForm() {
+
+        return new ModelAndView("owners/create-or-update-form", new ModelMap("owner", Owner.builder().build()));
+    }
+
+    @PostMapping("/new")
+    public String processCreateForm(@Valid Owner owner, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+
+            return "owners/create-or-update-form";
+
+        } else {
+            Owner savedOwner = ownerService.save(owner);
+
+            return String.format("redirect:/owners/%s", savedOwner.getId());
+        }
+    }
+
+    @GetMapping("/{id}/edit")
+    public ModelAndView showUpdateForm(@PathVariable Long id) {
+
+        return new ModelAndView("owners/create-or-update-form", new ModelMap("owner", ownerService.findById(id)));
+    }
+
+    @PostMapping("/{id}/edit")
+    public String processUpdateForm(@PathVariable Long id, @Valid Owner owner, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+
+            return "owners/create-or-update-form";
+
+        } else {
+            owner.setId(id);
+            Owner savedOwner = ownerService.save(owner);
+
+            return String.format("redirect:/owners/%s", savedOwner.getId());
         }
     }
 }
