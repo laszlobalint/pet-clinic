@@ -1,6 +1,9 @@
 package hu.laszlobalint.spring.petclinic.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +13,6 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Table(name = "pet_type")
 public class PetType extends BaseEntity {
 
@@ -21,4 +23,9 @@ public class PetType extends BaseEntity {
 
     @Column(name = "name")
     private String name;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
