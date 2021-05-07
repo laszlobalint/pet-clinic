@@ -11,11 +11,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -67,9 +70,31 @@ class OwnerControllerTest {
     }
 
     @Test
-    void find() throws Exception {
+    void findOwnersForm() throws Exception {
         mockMvc.perform(get("/owners/find"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("error/not-implemented"));
+                .andExpect(view().name("owners/find-owners"))
+                .andExpect(model().attributeExists("owner"));
+    }
+
+    @Test
+    void findOwnersWithSingleResult() throws Exception {
+        Owner owner = new Owner();
+        owner.setId(ownerId);
+        when(ownerService.findAllByLastNameLike(anyString())).thenReturn(Collections.singletonList(owner));
+
+        mockMvc.perform(get("/owners/searching"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/owners/" + ownerId));
+    }
+
+    @Test
+    void findOwnersWithMultipleResult() throws Exception {
+        when(ownerService.findAllByLastNameLike(anyString())).thenReturn(new ArrayList<>(mockOwners));
+
+        mockMvc.perform(get("/owners/searching"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("owners/owners-list"))
+                .andExpect(model().attribute("result", hasSize(2)));
     }
 }
