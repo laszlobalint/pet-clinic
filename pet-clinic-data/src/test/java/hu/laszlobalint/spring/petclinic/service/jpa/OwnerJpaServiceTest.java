@@ -1,5 +1,6 @@
 package hu.laszlobalint.spring.petclinic.service.jpa;
 
+import exception.NotFoundException;
 import hu.laszlobalint.spring.petclinic.model.Owner;
 import hu.laszlobalint.spring.petclinic.repository.OwnerRepository;
 import hu.laszlobalint.spring.petclinic.repository.PetRepository;
@@ -65,9 +66,13 @@ class OwnerJpaServiceTest {
     void findById() {
         when(ownerRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Owner owner = ownerJpaService.findById(OWNER_ID);
+        NotFoundException thrown = assertThrows(
+                NotFoundException.class,
+                () -> ownerJpaService.findById(OWNER_ID),
+                "Expected findById(id) to throw, but it did not."
+        );
 
-        assertNull(owner);
+        assertTrue(thrown.getMessage().contains("Owner with the given ID is not found!"));
     }
 
     @Test

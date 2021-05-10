@@ -1,5 +1,6 @@
 package hu.laszlobalint.spring.petclinic.service.jpa;
 
+import exception.NotFoundException;
 import hu.laszlobalint.spring.petclinic.model.Owner;
 import hu.laszlobalint.spring.petclinic.repository.OwnerRepository;
 import hu.laszlobalint.spring.petclinic.service.OwnerService;
@@ -31,7 +32,7 @@ public class OwnerJpaService implements OwnerService {
     @Override
     public Owner findById(Long id) {
 
-        return ownerRepository.findById(id).orElse(null);
+        return ownerRepository.findById(id).orElseThrow(() -> new NotFoundException("Owner with the given ID is not found!"));
     }
 
     @Override

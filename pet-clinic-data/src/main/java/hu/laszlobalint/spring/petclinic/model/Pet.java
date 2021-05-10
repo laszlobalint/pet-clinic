@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +30,7 @@ public class Pet extends BaseEntity {
             this.visits = visits;
     }
 
+    @Size(min = 2, max = 255)
     @Column(name = "name")
     private String name;
 

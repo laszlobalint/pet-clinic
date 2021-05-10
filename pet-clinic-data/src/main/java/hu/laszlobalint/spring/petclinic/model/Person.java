@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @MappedSuperclass
 @NoArgsConstructor
@@ -19,11 +20,13 @@ public class Person extends BaseEntity {
         this.lastName = lastName;
     }
 
-    @NotEmpty
+    @NotBlank
+    @Size(min = 2, max = 255)
     @Column(name = "first_name")
     private String firstName;
 
-    @NotEmpty
+    @NotBlank
+    @Size(min = 2, max = 255)
     @Column(name = "last_name")
     private String lastName;
 
