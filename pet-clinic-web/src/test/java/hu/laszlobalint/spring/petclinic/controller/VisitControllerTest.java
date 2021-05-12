@@ -90,7 +90,7 @@ class VisitControllerTest {
                 .param("date", "2020-11-11")
                 .param("description", "Another regular visit at the vet."))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/owners/{ownerId}"))
+                .andExpect(view().name(String.format("redirect:/owners/%s", 1L)))
                 .andExpect(model().attributeExists("visit"));
     }
 }
