@@ -99,6 +99,16 @@ class OwnerControllerTest {
     }
 
     @Test
+    void findOwnersWithEmptyString() throws Exception {
+        when(ownerService.findAllByLastNameLike(anyString())).thenReturn(new ArrayList<>(mockOwners));
+
+        mockMvc.perform(get("/owners/searching").param("lastName", ""))
+                .andExpect(status().isOk())
+                .andExpect(view().name("owners/owners-list"))
+                .andExpect(model().attribute("result", hasSize(2)));
+    }
+
+    @Test
     void showCreateForm() throws Exception {
         mockMvc.perform(get("/owners/new"))
                 .andExpect(status().isOk())

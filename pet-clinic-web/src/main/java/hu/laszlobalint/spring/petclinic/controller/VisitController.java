@@ -49,21 +49,24 @@ public class VisitController {
     }
 
     @GetMapping("/owners/*/pets/{petId}/visits/new")
-    public String showNewVisitForm() {
+    public String showNewVisitForm(@PathVariable Long petId) {
+        if (!petId.toString().matches("\\d*"))
+            throw new NumberFormatException("Pet ID is wrong!");
 
         return "visits/create-or-update-form";
+
     }
 
     @PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-    public String processNewVisitForm(@PathVariable Long petId, @Valid Visit visit, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
+    public String processNewVisitForm(@PathVariable Long ownerId, @PathVariable Long petId, @Valid Visit visit, BindingResult bindingResult) {
+        if (bindingResult.hasErrors() || petId == null) {
 
             return "visits/create-or-update-form";
 
         } else {
             visitService.save(visit);
 
-            return "redirect:/owners/{ownerId}";
+            return String.format("redirect:/owners/%s", ownerId);
         }
     }
 }
